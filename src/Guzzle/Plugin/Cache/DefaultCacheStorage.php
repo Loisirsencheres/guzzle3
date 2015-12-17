@@ -190,7 +190,7 @@ class DefaultCacheStorage implements CacheStorageInterface
             $url = $request->getUrl();
         }
 
-        return $this->keyPrefix . md5($request->getMethod() . ' ' . $url);
+        return $this->keyPrefix . md5($request->getMethod() . ' ' . $url).$this->getKeySuffix($url);
     }
 
     /**
@@ -203,7 +203,23 @@ class DefaultCacheStorage implements CacheStorageInterface
      */
     protected function getBodyKey($url, EntityBodyInterface $body)
     {
-        return $this->keyPrefix . md5($url) . $body->getContentMd5();
+        return $this->keyPrefix . md5($url) . $body->getContentMd5().$this->getKeySuffix($url);
+    }
+
+    /**
+     * Make cache key meaningful for Redis
+     * @param string $url
+     * @return string
+     */
+    protected function getKeySuffix($url)
+    {
+        $parsedUrl = parse_url($url);
+        $suffix = ':';
+
+        $suffix .= isset($parsedUrl['path'])?$parsedUrl['path']:'';
+        $suffix .= isset($parsedUrl['query'])?$parsedUrl['query']:'';
+
+        return $suffix;
     }
 
     /**
