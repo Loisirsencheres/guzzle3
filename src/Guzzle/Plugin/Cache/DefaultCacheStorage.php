@@ -96,7 +96,7 @@ class DefaultCacheStorage implements CacheStorageInterface
             $currentTime + $ttl
         ));
 
-        $this->cache->save($key, serialize($entries), $ttl+1); // TTl for the request cache to avoid accumulating entries
+        $this->cache->save($key, serialize($entries), $ttl); // TTl for the request cache to avoid accumulating entries
     }
 
     public function delete(RequestInterface $request)
